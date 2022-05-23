@@ -3,5 +3,5 @@
 ## Schema di montaggio
 
 <p align="center">
-  <img src="imgs/schema-di-montaggio.jpg" width="448" height="344">
+  <img src="imgs/schema-di-montaggio.jpg">
 </p>
