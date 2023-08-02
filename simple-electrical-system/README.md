@@ -1,6 +1,6 @@
 # arduino-simple-electrical-system
 
-## Schema di montaggio
+## Assembly Diagram
 
 <p align="center">
   <img src="imgs/schema-di-montaggio.jpg">

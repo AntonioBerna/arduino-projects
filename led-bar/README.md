@@ -1,6 +1,6 @@
 # arduino-led-bar
 
-## Schema di montaggio
+## Assembly Diagram
 
 <p align="center">
   <img src="imgs/schema-montaggio.jpg">

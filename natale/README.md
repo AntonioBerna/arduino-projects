@@ -33,7 +33,7 @@ Now there are two ways to proceed:
 	...
 	```
 
-## Schema di montaggio
+## Assembly Diagram
 
 <p align="center">
   <img src="imgs/schema-montaggio.jpg">
