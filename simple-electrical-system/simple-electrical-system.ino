@@ -1,78 +1,61 @@
-#include <IRremote.h>
+#include "configs.hpp"
 
-int ledPin = 13;
-int pulsantePin = 7;
-int ledStato = LOW;
-int pulsanteStato = LOW;
+// Switch Anti-Bounce
+uint8_t led_state = LOW;
+uint8_t switch_state = LOW;
+uint8_t last_read = LOW;
+unsigned long last_time = 0;
 
-int attesaDebounce = 50;
-unsigned long ultimoTempoDebounce = 0;
-int ultimaLettura = LOW;
-
-String inputString = "";
-char junk;
-
-int receiver = 11;
-IRrecv irrecv(receiver);
-decode_results results;
+// Bluetooth
+int incoming_byte = 0;
 
 void setup() {
-	Serial.begin(9600);
-	irrecv.enableIRIn();
-	pinMode(ledPin, OUTPUT);
-	pinMode(pulsantePin, INPUT);
-	digitalWrite(ledPin, ledStato);
+  Serial.begin(9600);
+
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(SWITCH_PIN, INPUT);
+  digitalWrite(LED_PIN, led_state);
+
+  IrReceiver.begin(IR_RECEIVE_PIN);
 }
 
 void loop() {
-	// Ricevitore IR
-	if (irrecv.decode(&results)) {
-		Serial.println(results.value, HEX);
-		irrecv.resume();
-	}
+  // IR
+  if (IrReceiver.decode()) {
+    IrReceiver.printIRResultShort(&Serial);
 
-	if (results.value == 0xFF02FD) { // tasto OK sul telecomando
-		digitalWrite(ledPin, HIGH); // set the LED on
-	} else if (results.value == 0xFF4AB5) { // tasto 0 sul telecomando
-		digitalWrite(ledPin, LOW); // set the LED off
-	}
+    IrReceiver.resume();
+    if (IrReceiver.decodedIRData.command == IR_TURN_ON) {
+      digitalWrite(LED_PIN, HIGH);
+    } else if (IrReceiver.decodedIRData.command == IR_TURN_OFF) {
+      digitalWrite(LED_PIN, LOW);
+    }
+  }
 
-	// Bluetooth
-	if (Serial.available()) {
-		while (Serial.available()) {
-			char inChar = (char)Serial.read();
-			inputString += inChar;
-		}
+  // Bluetooth
+  if (Serial.available() > 0) {
+    incoming_byte = Serial.read();
 
-		Serial.println(inputString);
-		
-		while (Serial.available() > 0) {
-			junk = Serial.read();
-		}
+    Serial.println(incoming_byte);
+    if (incoming_byte == BLUE_TURN_ON) {
+      digitalWrite(LED_PIN, HIGH);
+    } else if (incoming_byte == BLUE_TURN_OFF) {
+      digitalWrite(LED_PIN, LOW);
+    }
+  }
 
-		if (inputString == "a") {
-			digitalWrite(ledPin, HIGH);
-		} else if (inputString == "b") {
-			digitalWrite(ledPin, LOW);
-		}
+  // Switch Anti-Bounce
+  int new_read = digitalRead(SWITCH_PIN);
+  if (new_read != last_read) {
+    last_time = millis();
+  }
 
-		inputString = "";
-	}
-
-	// Bottone Antirimbalzo
-	int lettura = digitalRead(pulsantePin); // (int lettura = Variabile locale) leggo lo stato del pulsante
-	if (lettura != ultimaLettura) {	        // se lo stato del pin è il contrario dell`ultima lettura
-		ultimoTempoDebounce = millis();     // assegno il conteggio in millisecondi
-	}
-
-	if ((millis() - ultimoTempoDebounce) > attesaDebounce) { // se il conteggio è superiore a 50 millisecondi
-		if (lettura != pulsanteStato and lettura == HIGH) { // se il pin7 è diverso dallo stato del pulsante e il pulsante è premuto
-			ledStato = !ledStato;			// cambio lo stato del pin 13
-			digitalWrite(ledPin, ledStato); // Imposto al pin13 lo stato di ledStato
-		}
-		pulsanteStato = lettura; // assegno lo stato del pulsante al pin7
-	}
-
-	ultimaLettura = lettura; // assegno l`ultima lettura allo stato del pulsante
-	delay(10);				 // Ritardo 10 millis
+  if ((millis() - last_time) > DEBOUNCE_DELAY) {
+    if (new_read != switch_state && new_read == HIGH) {
+      led_state = !led_state;
+      digitalWrite(LED_PIN, led_state);
+    }
+    switch_state = new_read;
+  }
+  last_read = new_read;
 }
