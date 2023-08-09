@@ -1,3 +1,5 @@
+#pragma once
+
 #define DEBOUNCE_DELAY 25
 
 class Sensor {

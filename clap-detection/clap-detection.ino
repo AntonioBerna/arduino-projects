@@ -1,5 +1,5 @@
-#include "sensor.h"
-#include "led.h"
+#include "sensor.hpp"
+#include "led.hpp"
 
 #define SENSOR_PIN 7
 #define LED_PIN 8
