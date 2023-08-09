@@ -1,4 +1,4 @@
-# Clap Detection
+# clap-detection
 
 ## Assembly Diagram
 
