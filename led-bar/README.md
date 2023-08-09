@@ -1,4 +1,4 @@
-# arduino-led-bar
+# led-bar
 
 ## Assembly Diagram
 
