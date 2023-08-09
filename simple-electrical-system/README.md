@@ -1,4 +1,4 @@
-# arduino-simple-electrical-system
+# simple-electrical-system
 
 ## Assembly Diagram
 
