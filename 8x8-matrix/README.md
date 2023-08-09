@@ -1,4 +1,4 @@
-# arduino-8x8-matrix
+# 8x8-matrix
 
 ## Assembly Diagram
 
