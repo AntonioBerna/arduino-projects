@@ -1,4 +1,4 @@
-# arduino-natale
+# natale
 
 ## Set the project
 
